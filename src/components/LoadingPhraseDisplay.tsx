@@ -5,12 +5,14 @@ import FaderText from "./Fader";
 
 export const LoadingPhraseDisplay: React.FC = () => {
   const phraseManager = useMemo(() => new PhraseManager(fatherlySayings), []);
-  const [currentPhrase, setCurrentPhrase] = useState("");
+  const [currentPhrase, setCurrentPhrase] = useState(
+    phraseManager.getNextPhrase()
+  );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setCurrentPhrase(phraseManager.getNextPhrase());
-    }, 5750); // Wait for 1000 milliseconds to change the phrase
+    }, 4000);
 
     return () => {
       clearTimeout(timeoutId);

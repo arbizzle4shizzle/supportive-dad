@@ -43,14 +43,13 @@ const SupportiveDadChatbot: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // console.log(stage, messageSent, response, imageURL);
       if (stage === 1) {
         setStage(2);
       } else if (stage === 2) {
         setStage(3);
       } else if (stage === 3 && messageSent) {
         setStage(4);
-      } else if (stage === 4 && response) {
+      } else if (stage === 4 && response && imageURL) {
         setStage(5);
       }
     }, 4000);
@@ -65,7 +64,7 @@ const SupportiveDadChatbot: React.FC = () => {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // Prevent the form submission (if any)
+      event.preventDefault();
       sendMessage();
     }
   };
@@ -116,8 +115,6 @@ const SupportiveDadChatbot: React.FC = () => {
   );
 
   const renderStage5 = () => {
-    // const phrases = ['Phrase 1', 'Phrase 2', 'Phrase 3'];
-    // const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
     const imagePhrase =
       "And here's a little picture you can hold on to to remind you of our conversation:";
 
@@ -176,14 +173,12 @@ const SupportiveDadChatbot: React.FC = () => {
       if (assistantReply) {
         setResponse(assistantReply);
         setUserInput("");
-        // console.log(assistantReply);
         const imageResponse = await openai.createImage({
           prompt: assistantReply,
           size: "256x256",
         });
 
         const imageUrl = imageResponse?.data.data?.[0]?.url;
-        // console.log('Generated image URL:', imageUrl);
 
         setImageURL(imageUrl);
       }

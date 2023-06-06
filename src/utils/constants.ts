@@ -6,12 +6,11 @@ export const fatherlySayings: string[] = [
   "Nurturing dreams with dad's insight.",
   "Weaving paternal advice, always present.",
   "Cultivating wisdom for your journey.",
-  "Deliberating on dad's pearls of wisdom.",
+  "Crafting the perfect sports metaphor.",
   "Crafting counsel, straight from dad.",
   "Molding your path with father's wisdom.",
   "Shaping your future, dad's guidance.",
   "Constructing fatherly advice, step by step.",
   "Assembling the puzzle of dad's counsel.",
-  "Weighing options, sharing dad's secret sauce.",
   "Sculpting your success, with paternal guidance.",
 ];
