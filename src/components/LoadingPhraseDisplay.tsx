@@ -10,12 +10,12 @@ export const LoadingPhraseDisplay: React.FC = () => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setCurrentPhrase(phraseManager.getNextPhrase());
-    }, 1000); // Wait for 1000 milliseconds to change the phrase
+    }, 5750); // Wait for 1000 milliseconds to change the phrase
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [phraseManager]);
+  }, [phraseManager, currentPhrase]);
 
   return <FaderText text={currentPhrase} />;
 };
