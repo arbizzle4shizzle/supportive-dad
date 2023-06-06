@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import "./SupportiveDadChatbot.css";
-import { FormattedText } from "./FormattedText";
-import { LoadingPhraseDisplay } from "./LoadingPhraseDisplay";
+import { FormattedText } from "./components/FormattedText";
+import { LoadingPhraseDisplay } from "./components/LoadingPhraseDisplay";
+import FaderText from "./components/Fader";
 
 const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
 const configuration = new Configuration({ apiKey: openaiApiKey });
@@ -52,7 +53,7 @@ const SupportiveDadChatbot: React.FC = () => {
       } else if (stage === 4 && response) {
         setStage(5);
       }
-    }, 4500);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [stage, messageSent, response, imageURL]);
@@ -71,16 +72,14 @@ const SupportiveDadChatbot: React.FC = () => {
 
   const renderStage1 = () => (
     <div className="stage-container">
-      <h1 className="fade-in-intro">
-        Hey kid, heard there's something on your mind...
-      </h1>
+      <FaderText text={"Hey kid, heard there's something on your mind..."} />
     </div>
   );
 
   const renderStage2 = () => (
     <div className="stage-container">
-      <h1 className="fade-in-intro">Don't worry, everything will be okay.</h1>
-      <h1 className="fade-in-intro">I'm here for you.</h1>
+      <FaderText text={"Don't worry, everything will be okay."} />
+      <FaderText text={"I'm here for you."} />
     </div>
   );
 
@@ -90,7 +89,7 @@ const SupportiveDadChatbot: React.FC = () => {
         Tell me, what's going on?
       </h1>
       <input
-        className={`input-box ${messageSent ? "fade-out" : "fade-in"}`}
+        className={`input-box ${!messageSent ? "fade-in" : "fade-out"}`}
         type="text"
         value={userInput}
         onChange={handleUserInput}
@@ -124,7 +123,6 @@ const SupportiveDadChatbot: React.FC = () => {
 
     return (
       <div className="stage-container">
-        {/* <h2 className="fade-in">{response}</h2> */}
         <FormattedText text={response} />
         {imageURL && (
           <>
