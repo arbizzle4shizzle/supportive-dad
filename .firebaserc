@@ -1,7 +1,5 @@
 {
   "projects": {
     "default": "supportive-dad"
-  },
-  "targets": {},
-  "etags": {}
+  }
 }
