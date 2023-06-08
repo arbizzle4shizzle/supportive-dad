@@ -40,7 +40,7 @@ const SupportiveDadChatbot: React.FC = () => {
   const [userInput, setUserInput] = useState("");
   const [messageSent, setMessageSent] = useState(false);
   const [imageURL, setImageURL] = useState<string | undefined>("");
-
+  console.log(process.env.REACT_APP_OPENAI_API_KEY);
   useEffect(() => {
     const timer = setTimeout(() => {
       if (stage === 1) {
