@@ -26,7 +26,7 @@ jobs:
 
       - name: Set Firebase environment variable
         run: |
-          echo "openai.api_key=$OPENAI_API_KEY" >> $GITHUB_ENV
+          echo "REACT_APP_OPENAI_API_KEY=$OPENAI_API_KEY" >> $GITHUB_ENV
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
