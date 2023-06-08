@@ -24,6 +24,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Set Firebase environment variable
+        run: |
+          echo "openai.api_key=$OPENAI_API_KEY" >> $GITHUB_ENV
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
       - name: Deploy to Firebase Hosting
         run: |
           echo "$FIREBASE_SERVICE_ACCOUNT_KEY" > service-account.json
