@@ -1,46 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import axios from "axios";
 import "./SupportiveDadChatbot.css";
 import { FormattedText } from "./components/FormattedText";
 import { LoadingPhraseDisplay } from "./components/LoadingPhraseDisplay";
 import FaderText from "./components/Fader";
 
-const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
-const configuration = new Configuration({ apiKey: openaiApiKey });
-const openai = new OpenAIApi(configuration);
-
-const trainingConversation: ChatCompletionRequestMessage[] = [
-  { role: "system", content: "You are a supportive dad." },
-  { role: "user", content: "I feel really down today." },
-  {
-    role: "assistant",
-    content: "I'm here for you. What's been bothering you?",
-  },
-  { role: "user", content: "I lost my job, and I don't know what to do." },
-  {
-    role: "assistant",
-    content:
-      "I understand that losing a job can be tough. Take some time to process your emotions, and let's talk about what options you have.",
-  },
-  {
-    role: "user",
-    content:
-      "I've been applying to other jobs, but haven't had any luck so far.",
-  },
-  {
-    role: "assistant",
-    content:
-      "Don't lose hope. Job hunting can be challenging, but persistence is key. Keep refining your resume, expanding your network, and exploring different avenues for opportunities.",
-  },
-];
-
 const SupportiveDadChatbot: React.FC = () => {
   const [stage, setStage] = useState(1);
-  const [response, setResponse] = useState("");
+  const [dadsResponse, setDadsResponse] = useState("");
   const [userInput, setUserInput] = useState("");
   const [messageSent, setMessageSent] = useState(false);
   const [imageURL, setImageURL] = useState<string | undefined>("");
-  console.log(process.env.REACT_APP_OPENAI_API_KEY);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (stage === 1) {
@@ -49,13 +20,13 @@ const SupportiveDadChatbot: React.FC = () => {
         setStage(3);
       } else if (stage === 3 && messageSent) {
         setStage(4);
-      } else if (stage === 4 && response && imageURL) {
+      } else if (stage === 4 && dadsResponse && imageURL) {
         setStage(5);
       }
     }, 4000);
 
     return () => clearTimeout(timer);
-  }, [stage, messageSent, response, imageURL]);
+  }, [stage, messageSent, dadsResponse, imageURL]);
 
   const handleReset = () => {
     setStage(1);
@@ -120,7 +91,7 @@ const SupportiveDadChatbot: React.FC = () => {
 
     return (
       <div className="stage-container">
-        <FormattedText text={response} />
+        <FormattedText text={dadsResponse} />
         {imageURL && (
           <>
             <h2 className="fade-in">{imagePhrase}</h2>
@@ -149,42 +120,23 @@ const SupportiveDadChatbot: React.FC = () => {
       return;
     }
     setMessageSent(true);
+    setUserInput("");
 
-    try {
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          ...trainingConversation,
-          { role: "user", content: userInput },
-          {
-            role: "assistant",
-            content:
-              "Here's some advice based on what you shared, with an uplifting and positive reminder at the end. I'm here for you and won't immediately recommend you seek advice from others unless you mention it or it's what makes the most sense. Remember, you are strong and capable. You got this!",
-          },
-        ],
-        max_tokens: 256,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
+    const askDadOptions = {
+      method: "GET",
+      url: "http://localhost:8000/askDad",
+      params: { userInput },
+    };
+
+    await axios
+      .request(askDadOptions)
+      .then((response) => {
+        setDadsResponse(response.data.dadsResponse);
+        setImageURL(response.data.imageURL);
+      })
+      .catch((error) => {
+        console.error(error);
       });
-
-      const assistantReply = response?.data.choices?.[0]?.message?.content;
-
-      if (assistantReply) {
-        setResponse(assistantReply);
-        setUserInput("");
-        const imageResponse = await openai.createImage({
-          prompt: assistantReply,
-          size: "256x256",
-        });
-
-        const imageUrl = imageResponse?.data.data?.[0]?.url;
-
-        setImageURL(imageUrl);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
   };
 
   return (
