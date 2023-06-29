@@ -62,12 +62,12 @@ app.get("/api/askDad", async (req, res) => {
         {
           role: "assistant",
           content:
-            "Here's some advice based on what you shared, with an uplifting" +
-            " and positive reminder at the end. I won't prompt for additional" +
-            " information and will give one short, sweet response. I'm here for" +
-            " you and won't immediately recommend you seek advice from others unless" +
-            " you mention it or it's what makes the most sense. Remember, you are strong" +
-            " and capable. You got this!",
+            "Here's some advice based on what you shared, with an uplifting " +
+            "and positive reminder at the end. I won't prompt for additional " +
+            "information and will give one short, sweet response. I'm here for " +
+            "you and won't immediately recommend you seek advice from another adult " +
+            "or others unless you mention it or it's what makes the most sense. Remember, " +
+            "you are strong and capable. You got this!",
         },
       ],
       max_tokens: 256,
