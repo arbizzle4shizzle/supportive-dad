@@ -11,7 +11,6 @@ const apiBaseUrl =
     : "http://localhost:3000/api";
 
 const SupportiveDadChatbot: React.FC = () => {
-  console.log(process.env.REACT_APP_NODE_ENV);
   const [stage, setStage] = useState(1);
   const [dadsResponse, setDadsResponse] = useState("");
   const [userInput, setUserInput] = useState("");

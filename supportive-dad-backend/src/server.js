@@ -10,6 +10,18 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 
+// Get the directory path of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Serve static files from the "build" directory
+app.use(express.static(join(__dirname, "../build")));
+
+// Serve the index.html file for routes that don't start with /api/
+app.get(/^\/(?!api\/).*/, (req, res) => {
+  res.sendFile(join(__dirname, "../build/index.html"));
+});
+
 const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
 const configuration = new Configuration({ apiKey: openaiApiKey });
 const openai = new OpenAIApi(configuration);
@@ -38,18 +50,6 @@ const trainingConversation = [
       "Don't lose hope. Job hunting can be challenging, but persistence is key. Keep refining your resume, expanding your network, and exploring different avenues for opportunities.",
   },
 ];
-
-// Get the directory path of the current module file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Serve static files from the "build" directory
-app.use(express.static(join(__dirname, "build")));
-
-// Serve the index.html file for routes that don't start with /api/
-app.get(/^\/(?!api\/).*/, (req, res) => {
-  res.sendFile(join(__dirname, "build", "index.html"));
-});
 
 app.get("/api/askDad", async (req, res) => {
   const { userInput } = req.query;
