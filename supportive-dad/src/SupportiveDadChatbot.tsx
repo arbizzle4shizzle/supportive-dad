@@ -124,7 +124,7 @@ const SupportiveDadChatbot: React.FC = () => {
 
     const askDadOptions = {
       method: "GET",
-      url: `api/askDad`,
+      url: "api/askDad",
       params: { userInput },
     };
 
