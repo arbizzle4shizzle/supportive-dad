@@ -5,7 +5,13 @@ import { FormattedText } from "./components/FormattedText";
 import { LoadingPhraseDisplay } from "./components/LoadingPhraseDisplay";
 import FaderText from "./components/Fader";
 
+const apiBaseUrl =
+  process.env.REACT_APP_NODE_ENV === "production"
+    ? "https://supportive.dad/api"
+    : "http://localhost:3000/api";
+
 const SupportiveDadChatbot: React.FC = () => {
+  console.log(process.env.REACT_APP_NODE_ENV);
   const [stage, setStage] = useState(1);
   const [dadsResponse, setDadsResponse] = useState("");
   const [userInput, setUserInput] = useState("");
@@ -124,7 +130,7 @@ const SupportiveDadChatbot: React.FC = () => {
 
     const askDadOptions = {
       method: "GET",
-      url: "http://localhost:8000/askDad",
+      url: `${apiBaseUrl}/askDad`,
       params: { userInput },
     };
 

@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import { Configuration, OpenAIApi } from "openai";
 import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 dotenv.config();
-const PORT = 8000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 
@@ -37,7 +39,19 @@ const trainingConversation = [
   },
 ];
 
-app.get("/askDad", async (req, res) => {
+// Get the directory path of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Serve static files from the "build" directory
+app.use(express.static(join(__dirname, "build")));
+
+// Serve the index.html file for routes that don't start with /api/
+app.get(/^\/(?!api\/).*/, (req, res) => {
+  res.sendFile(join(__dirname, "build", "index.html"));
+});
+
+app.get("/api/askDad", async (req, res) => {
   const { userInput } = req.query;
   try {
     const response = await openai.createChatCompletion({
@@ -48,7 +62,12 @@ app.get("/askDad", async (req, res) => {
         {
           role: "assistant",
           content:
-            "Here's some advice based on what you shared, with an uplifting and positive reminder at the end. I'm here for you and won't immediately recommend you seek advice from others unless you mention it or it's what makes the most sense. Remember, you are strong and capable. You got this!",
+            "Here's some advice based on what you shared, with an uplifting" +
+            " and positive reminder at the end. I won't prompt for additional" +
+            " information and will give one short, sweet response. I'm here for" +
+            " you and won't immediately recommend you seek advice from others unless" +
+            " you mention it or it's what makes the most sense. Remember, you are strong" +
+            " and capable. You got this!",
         },
       ],
       max_tokens: 256,
@@ -62,7 +81,12 @@ app.get("/askDad", async (req, res) => {
 
     if (dadsResponse) {
       const imageResponse = await openai.createImage({
-        prompt: `A child is asking their dad for advice with the following prompt: ${userInput}. Create a memorable image that encompasses the advice the dad gave here: ${dadsResponse}`,
+        prompt:
+          "A child is asking their dad for advice with the following prompt: " +
+          userInput +
+          ". Create a memorable image that encompasses the following advice " +
+          " the dad gave: " +
+          dadsResponse,
         size: "256x256",
       });
       const imageURL = imageResponse?.data.data?.[0]?.url;
